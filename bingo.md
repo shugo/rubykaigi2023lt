@@ -21,6 +21,69 @@ author
 
 # Demo
 
+# Bingo machine implementation
+
+* Rails
+* nginx 
+
+# Turbo
+
+```html
+<%= turbo_stream.update "numbers" do %>
+<%= render partial: "numbers", locals: { numbers: @numbers } %>
+<% end %>
+```
+
+# Select numbers
+
+```ruby
+class Number
+  def self.create
+    synchronize do
+      numbers = read_numbers rescue []
+      return numbers if numbers.size >= 75
+      candidates = (1..75).to_a - numbers
+      numbers.push(candidates.sample)
+      write_numbers(numbers)
+    end
+  end
+end
+```
+
+# Synchronization
+
+```ruby
+class Number
+  LOCK_FILE_PATH = File.expand_path("tmp/numbers.lock", Rails.root)
+
+  def self.synchronize(&block)
+    File.open(LOCK_FILE_PATH, "w") do |f|
+      f.flock(File::LOCK_EX)
+      block.call
+    end
+  end
+end
+```
+
+# Atomic update for nginx
+
+```ruby
+class Number
+  TMP_JSON_FILE_PATH = File.expand_path("tmp/numbers.json", Rails.root)
+  JSON_FILE_PATH = File.expand_path("public/numbers.json", Rails.root)
+
+  def self.write_numbers(numbers)
+    File.write(TMP_JSON_FILE_PATH, { numbers: numbers }.to_json)
+    File.rename(TMP_JSON_FILE_PATH, JSON_FILE_PATH)
+    numbers
+  end
+end
+```
+
+# rename(2)
+
+> If newpath already exists, it will be atomically replaced, so that there is no point at which another process attempting to access newpath will find it missing.
+
 # Bingo card implementation
 
 * Rails
@@ -93,6 +156,20 @@ await window.rubyVM.evalAsync("p (0..3).all? { |i| i.even? }")
 
 > evalAsync internally uses Fiber, and its stack size 256kb is smaller than main stack (16mb).
 
+# Extend the stack size?
+
+```javascript
+const wasi = new WASI({
+    args,
+    env: {
+        "GEM_PATH": "/gems:/home/me/.gem/ruby/3.2.0+2",
+        "GEM_SPEC_CACHE": "/home/me/.gem/specs",
+        "RUBY_FIBER_MACHINE_STACK_SIZE": String(1024 * 1024 * 20),
+    },
+    ...
+});
+```
+
 # Loop unrolling by ERB
 
 ```
@@ -111,3 +188,4 @@ await window.rubyVM.evalAsync("p (0..3).all? { |i| i.even? }")
 # Conclusion
 
 * ruby.wasm is awesome
+* ERB is a good preprocessor for ruby.wasm
