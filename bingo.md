@@ -103,10 +103,6 @@ end
   CARD[2][2] = ""
 ```
 
-# Acknowledgement
-
-![](codeiq.png){:relative_height='90'}
-
 # Bingo card specification
 
 |Row B|Row I|Row N|Row G|Row O|
@@ -114,6 +110,10 @@ end
 |(1..15).sample(5)|(16..30).sample(5)|(31..45).sample(5)|(46..60).sample(5)|(61..75).sample(5)|
 
 * The center space is free
+
+# Acknowledgement
+
+![](codeiq.png){:relative_height='90'}
 
 # Using Promise on ruby.wasm
 
@@ -135,8 +135,12 @@ end
 ```html
 <script type="text/ruby">
   def update_loop
-    ...
-  end
+    selected = Array.new(5) { [] }
+    selected[2][2] = true
+    while true
+      selected_numbers = JS.global.fetch("/numbers.json?t=#{Time.now.to_i}").
+        await.json.await[:numbers].to_s.split(/,/).map(&:to_i)
+      ...
 </script>
 <script type="text/javascript">
   // Promise#await works only under evalAsync
@@ -162,9 +166,8 @@ await window.rubyVM.evalAsync("p (0..3).all? { |i| i.even? }")
 const wasi = new WASI({
     args,
     env: {
-        "GEM_PATH": "/gems:/home/me/.gem/ruby/3.2.0+2",
-        "GEM_SPEC_CACHE": "/home/me/.gem/specs",
         "RUBY_FIBER_MACHINE_STACK_SIZE": String(1024 * 1024 * 20),
+        ...
     },
     ...
 });
@@ -183,6 +186,23 @@ const wasi = new WASI({
 %>
   if <%== is_bingo %>
     ...
+```
+
+# Unrolled code
+
+```ruby
+if selected[0][0]&&selected[0][1]&&selected[0][2]&&selected[0][3]&&selected[0][4]||
+selected[1][0]&&selected[1][1]&&selected[1][2]&&selected[1][3]&&selected[1][4]||
+selected[2][0]&&selected[2][1]&&selected[2][2]&&selected[2][3]&&selected[2][4]||
+selected[3][0]&&selected[3][1]&&selected[3][2]&&selected[3][3]&&selected[3][4]||
+selected[4][0]&&selected[4][1]&&selected[4][2]&&selected[4][3]&&selected[4][4]||
+selected[0][0]&&selected[1][0]&&selected[2][0]&&selected[3][0]&&selected[4][0]||
+selected[0][1]&&selected[1][1]&&selected[2][1]&&selected[3][1]&&selected[4][1]||
+selected[0][2]&&selected[1][2]&&selected[2][2]&&selected[3][2]&&selected[4][2]||
+selected[0][3]&&selected[1][3]&&selected[2][3]&&selected[3][3]&&selected[4][3]||
+selected[0][4]&&selected[1][4]&&selected[2][4]&&selected[3][4]&&selected[4][4]||
+selected[0][0]&&selected[1][1]&&selected[2][2]&&selected[3][3]&&selected[4][4]||
+selected[0][4]&&selected[1][3]&&selected[2][2]&&selected[3][1]&&selected[4][0]
 ```
 
 # Conclusion
