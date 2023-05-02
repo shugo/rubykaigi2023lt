@@ -1,6 +1,6 @@
-# TODO: SLIDE TITLE
+# BINGO!
 
-TODO: SLIDE DESCRIPTION
+Slides for RubyKaigi 2023 LT
 
 ## For author
 
