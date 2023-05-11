@@ -111,7 +111,7 @@ end
 
 * The center space is free
 
-# Acknowledgement
+# Acknowledgements
 
 ![](codeiq.png){:relative_height='90'}
 
