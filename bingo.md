@@ -173,7 +173,9 @@ const wasi = new WASI({
 });
 ```
 
-# Loop unrolling by ERB
+# BINGO!
+
+* Loop unrolling by ERB
 
 ```
 <%
@@ -189,6 +191,8 @@ const wasi = new WASI({
 ```
 
 # Unrolled code
+
+* No more SystemStackError
 
 ```ruby
 if selected[0][0]&&selected[0][1]&&selected[0][2]&&selected[0][3]&&selected[0][4]||
