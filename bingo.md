@@ -5,6 +5,8 @@ author
 
 # Self introduction
 
+* Shugo Maeda
+* The author of Textbringer
 * President of NaCl (Network Applied Communication Laboratory Ltd.) since Dec 2022
 
 # Lottery at a year-end party
